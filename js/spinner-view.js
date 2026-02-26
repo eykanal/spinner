@@ -57,15 +57,8 @@ function renderSpinners() {
     if (currentReelStates.length !== listsCount) {
         currentReelStates = [];
         for (let i = 0; i < listsCount; i++) {
-            // Pick 5 random items to display initially
             const listData = data.lists[i];
-            const initial5 = [];
-            for (let j = 0; j < 5; j++) {
-                // If it's the very first load, just pick purely random to populate the screen
-                const randItem = listData[Math.floor(Math.random() * listData.length)];
-                initial5.push(randItem);
-            }
-            currentReelStates.push(initial5);
+            currentReelStates.push(getDistinctItems(listData, 5));
         }
     }
 
@@ -162,26 +155,15 @@ function handleSpinClick() {
             newItemsFragment.appendChild(div);
         }
 
-        // Then 2 padding items (Above the chosen one when landed)
-        const pad1 = fullList[Math.floor(Math.random() * fullList.length)];
-        const pad2 = fullList[Math.floor(Math.random() * fullList.length)];
-        [pad1, pad2].forEach(txt => {
-            const div = document.createElement('div');
-            div.className = 'spinner-item';
-            div.textContent = txt;
-            newItemsFragment.appendChild(div);
-        });
+        // Generate landing set (2 above, 2 below) all distinct from chosen
+        const landingSet = getDistinctItems(fullList, 4, [chosenObj.item]);
 
-        // The CHOSEN ITEM
-        const chosenDiv = document.createElement('div');
-        chosenDiv.className = 'spinner-item';
-        chosenDiv.textContent = chosenObj.item;
-        newItemsFragment.appendChild(chosenDiv);
+        const pad1 = landingSet[0];
+        const pad2 = landingSet[1];
+        const pad3 = landingSet[2];
+        const pad4 = landingSet[3];
 
-        // 2 padding items (Below the chosen one when landed)
-        const pad3 = fullList[Math.floor(Math.random() * fullList.length)];
-        const pad4 = fullList[Math.floor(Math.random() * fullList.length)];
-        [pad3, pad4].forEach(txt => {
+        [pad1, pad2, chosenObj.item, pad3, pad4].forEach((txt) => {
             const div = document.createElement('div');
             div.className = 'spinner-item';
             div.textContent = txt;
@@ -229,4 +211,33 @@ function handleSpinClick() {
             });
         }
     }, durationSeconds * 1000);
+}
+
+/**
+ * Utility to pick N distinct items from a list.
+ * @param {string[]} list The source list of items
+ * @param {number} count How many items to pick
+ * @param {string[]} exclude Optional array of items to exclude from selection
+ * @returns {string[]}
+ */
+function getDistinctItems(list, count, exclude = []) {
+    // Collect all candidates
+    let candidates = [...new Set(list)];
+    if (exclude.length > 0) {
+        candidates = candidates.filter(item => !exclude.includes(item));
+    }
+
+    // Shuffle and pick
+    const result = [];
+    while (result.length < count && candidates.length > 0) {
+        const idx = Math.floor(Math.random() * candidates.length);
+        result.push(candidates.splice(idx, 1)[0]);
+    }
+
+    // Fallback if not enough distinct items (shouldn't happen per spec of min 5 items)
+    while (result.length < count) {
+        result.push(list[Math.floor(Math.random() * list.length)]);
+    }
+
+    return result;
 }

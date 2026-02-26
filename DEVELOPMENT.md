@@ -7,7 +7,7 @@ This web-based, serverless application allows the user to create one or more lis
 There are a few options that can be set by the user:
 
 * Each list may have a title. The title can optionally be shown on the screen above the spinner.
-* The number of lists stored (maximum 3)
+* The number of lists stored (maximum 4)
 * Whether the random draw uses sampling with or without replacement
 * Whether the first draw has a longer duration than the subsequent ones
     * If yes, what the first draw delay should be, and what the subsequent delays should be
@@ -24,8 +24,8 @@ There are a few options that can be set by the user:
 
 ### Defaults and limits
 
-* Number of lists stored (default): 3
-* The app supports up to 3 visible spinners (always shows all stored lists)
+* Number of lists stored (default): 4
+* The app supports up to 4 visible spinners (always shows all stored lists)
 * Display title on screen: No
 * Max items per list: 1000
 * Sampling mode default (options of "with replacement" or "without replacement"): with. This can be stored as an enum string in the settings.
@@ -47,6 +47,7 @@ Note: implementers should validate inputs (e.g., prevent creating more than `max
     * If performing selection without replacement, the item shown in the center display MUST be the one that is removed from the list.
     * When multiple spinners are visible, draws should run in parallel.
 * There should be an "options" link in the bottom right of the screen which brings the user to a separate options screen. The options should all be saved immediately on change. 
+* To ensure visual clarity, the five items visible on a spinner at any given time (including after a spin stops) must be distinct from one another.
     * Settings should be persisted to localstorage.
     * Settings changes should be applied immediately.
     * There is no undo for settings changes.
@@ -56,13 +57,17 @@ Note: implementers should validate inputs (e.g., prevent creating more than `max
     * The user should have the option to load a csv containing data. Each column in the csv corresponds to one list.
     * The data screen should show a table of the currently loaded data.
     * The user should have a button to delete the currently loaded data.
-    * If the user loads new data, it should replace the current data. I.e., no matter what data is currently loaded (one or more lists, each with one or more items), on loading new data all existing data should be cleared. There is no undo or confirm step.
-    * If any row in the csv has more than three columns it should be rejected.
+    * If the user loads new data, it should replace the current data. I.e., no matter what data is currently loaded (one or more lists, each with one or more items), on loading new data all existing data should be cleared. The user is prompted for confirmation before data is replaced or deleted.
+    * If any row in the csv has more than four columns it should be rejected.
     * If the csv is empty then replace all existing lists with nulls.
     * There should be a checkbox on the data page to specify whether the first row of the csv data is list titles or not. If yes, then store the first row as titles, which would be displayed (if the user selects "display titles above lists: yes")
     * The csv must have at least five items in each list. If any list has fewer than five items, the entire file should be rejected.
     * If any list has more than the maximum number of items, the entire file should be rejected.
     * If a user navigates to the data page, any item that has been drawn (when sampling "without replacement" is turned on) should visually stand out with a `#eeeeee` background color. The table state should explicitly reflect any immediate changes to data when the user switches to the data tab without enforcing a hard browser reload.
+* Quick Load Datasets:
+    * The Data page provides links to "Quick Load" preset datasets stored in the `/data/` directory.
+    * Clicking a dataset link will replace the current data after user confirmation.
+    * Developers can add new datasets by placing a CSV in `/data/` and updating the `QUICK_LOAD_DATASETS` configuration in `js/data-view.js`. Each config object must specify `name`, `path`, and `hasHeaders`.
 * There is no need for accessibility features in this app; the population using this will have no need for them. To that extent, to improve readability, do not add any accessibility features.
 
 ### Appearance requirements
@@ -77,7 +82,7 @@ This is a single-page app, and it is critical that AT NO POINT may a scrollbar a
         * The "data" link, described above. This should be just the word "Data".
         * The "options" link, described above. This should be just the word "Options".
 * Spinner visualization: each visible list shows a vertically-scrolling (or horizontally animated) reel of items that cycles rapidly and then slows to land on the chosen item.
-    * Each spinner should be 30% width and 100% height relative to SpinView. The spinners should be equally spaced from each other.
+    * Each spinner should be 23% width and 100% height relative to SpinView. The spinners should be equally spaced from each other.
         * If the user chose to add a list title, then an additional heading should be at the top of SpinView, with a height of 15% vertical relative to SpinView, and the spinner should be reduced from 100% height to 85% height relative to SpinView.
     * The text on each spinner should be font size "xxx-large".
     * The spinner should be black text on a white background.
@@ -104,7 +109,7 @@ This is a single-page app, and it is critical that AT NO POINT may a scrollbar a
 
 ### Acceptance criteria
 
-* A user can create up to 3 persisted lists (persisted in LocalStorage) and add up to 1000 items per list.
+* A user can create up to 4 persisted lists (persisted in LocalStorage) and add up to 1000 items per list.
 * A user can run a draw that visually animates and lands on the randomly selected item (matching the sampling mode setting).
 * Default settings match the values above; UI exposes controls to change them.
 

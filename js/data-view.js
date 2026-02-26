@@ -130,10 +130,10 @@ function processCSV(csvText, hasHeaders) {
 
     const rawGrid = rows.map(row => parseCSVRow(row));
 
-    // Check Max Columns rule = 3. Any row has > 3? Reject.
+    // Check Max Columns rule = 4. Any row has > 4? Reject.
     for (let i = 0; i < rawGrid.length; i++) {
-        if (rawGrid[i].length > 3) {
-            alert("Error: CSV has more than 3 columns in a row. Rejected.");
+        if (rawGrid[i].length > 4) {
+            alert("Error: CSV has more than 4 columns in a row. Rejected.");
             clearData();
             renderTable();
             return;

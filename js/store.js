@@ -92,9 +92,9 @@ export function clearData() {
 }
 
 export function updateData(hasHeaders, headers, lists) {
-    // Limits check: Max 3 lists stored
-    const storingLists = lists.slice(0, 3);
-    const storingHeaders = headers.slice(0, 3);
+    // Limits check: Max 4 lists stored
+    const storingLists = lists.slice(0, 4);
+    const storingHeaders = headers.slice(0, 4);
 
     appData = {
         hasHeaders,

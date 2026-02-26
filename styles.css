@@ -105,9 +105,9 @@ td {
 .header-title {
     color: red;
     font-weight: bold;
-    font-size: 60px;
+    font-size: clamp(2rem, 6vmin, 14rem);
     text-align: center;
-    width: 30%;
+    width: 23%;
     background-color: #fdd;
 }
 
@@ -122,7 +122,7 @@ td {
 
 /* Individual Spinner Container */
 .spinner-node {
-    width: 30%;
+    width: 23%;
     height: 100%;
     position: relative;
     background-color: white;
@@ -162,7 +162,7 @@ td {
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-size: 48px;
+    font-size: clamp(1rem, 4vmin, 12rem);
     word-break: break-word;
     /* Allows long text to wrap */
     padding: 10px;
