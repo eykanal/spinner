@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spinner App</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
     <!-- Main Spinner View -->
@@ -13,7 +15,7 @@
         <div id="spin-view" class="spin-view">
             <!-- Headers will be injected here if enabled -->
             <div id="headers-container" class="headers-container" style="display: none;"></div>
-            
+
             <!-- Spinners will be injected here -->
             <div id="spinners-container" class="spinners-container"></div>
         </div>
@@ -35,7 +37,7 @@
             <div class="actions">
                 <button id="btn-delete-data">Delete Currently Loaded Data</button>
             </div>
-            
+
             <div class="data-preview" id="data-preview">
                 <!-- Table will be injected here -->
             </div>
@@ -52,11 +54,8 @@
                         <input type="checkbox" id="opt-display-title"> Display titles above lists (if available)
                     </label>
                 </div>
-                
-                <div class="form-group">
-                    <label for="opt-displayed-lists">Number of lists displayed (1-3):</label>
-                    <input type="number" id="opt-displayed-lists" min="1" max="3" value="1">
-                </div>
+
+
 
                 <div class="form-group">
                     <label for="opt-sampling-mode">Sampling Mode:</label>
@@ -95,4 +94,5 @@
     <!-- JS Application Entry -->
     <script type="module" src="js/app.js"></script>
 </body>
+
 </html>

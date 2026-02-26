@@ -7,8 +7,7 @@ This web-based, serverless application allows the user to create one or more lis
 There are a few options that can be set by the user:
 
 * Each list may have a title. The title can optionally be shown on the screen above the spinner.
-* The number of lists stored
-* The number of lists displayed on the screen, maximum 3
+* The number of lists stored (maximum 3)
 * Whether the random draw uses sampling with or without replacement
 * Whether the first draw has a longer duration than the subsequent ones
     * If yes, what the first draw delay should be, and what the subsequent delays should be
@@ -26,7 +25,7 @@ There are a few options that can be set by the user:
 ### Defaults and limits
 
 * Number of lists stored (default): 3
-* Default number of lists displayed on screen: 1 (app supports up to 3 visible spinners)
+* The app supports up to 3 visible spinners (always shows all stored lists)
 * Display title on screen: No
 * Max items per list: 1000
 * Sampling mode default (options of "with replacement" or "without replacement"): with. This can be stored as an enum string in the settings.
@@ -35,7 +34,7 @@ There are a few options that can be set by the user:
     * first-draw = 5 (The very first time the user triggers a spin, it takes this duration, and all future clicks take the subsequent-draws duration)
     * subsequent-draws = 2
 
-Note: implementers should validate inputs (e.g., prevent creating more than `max items per list`, clamp displayed lists to 1–3, and enforce `number of lists stored` limits in UI where applicable).
+Note: implementers should validate inputs (e.g., prevent creating more than `max items per list` and enforce `number of lists stored` limits in UI where applicable).
 
 ### UX & Behaviour Requirements
 
@@ -49,7 +48,7 @@ Note: implementers should validate inputs (e.g., prevent creating more than `max
     * When multiple spinners are visible, draws should run in parallel.
 * There should be an "options" link in the bottom right of the screen which brings the user to a separate options screen. The options should all be saved immediately on change. 
     * Settings should be persisted to localstorage.
-    * Settings changes should be applied immediately. If the settings change the default number of lists to less than the current number stored in data then the data should be truncated to the allowed number of lists.
+    * Settings changes should be applied immediately.
     * There is no undo for settings changes.
     * If users set integer values for any customizable option beyond the allowable settings, default to the closest allowable number.
     * Provide controls to: set sampling mode; toggle first-draw-longer and edit the first/subsequent draw delays. Lists cannot be edited or created manually in the UI; they can only be loaded or deleted via the data page.

@@ -29,7 +29,7 @@ function renderSpinners() {
     headersContainer.innerHTML = '';
 
     // Determine how many lists to show
-    const listsCount = Math.min(settings.displayedLists, data.lists.length);
+    const listsCount = data.lists.length;
 
     if (listsCount === 0) {
         spinnersContainer.innerHTML = '<div style="margin: auto; font-size: xx-large;">No data loaded. Go to the Data view to load a CSV.</div>';
@@ -110,7 +110,7 @@ function handleSpinClick() {
 
     const settings = getSettings();
     const data = getData();
-    const listsCount = Math.min(settings.displayedLists, data.lists.length);
+    const listsCount = data.lists.length;
 
     // 1. Validate if we can spin
     const availablePerList = [];

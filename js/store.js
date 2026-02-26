@@ -6,7 +6,6 @@ const STORAGE_KEY_DATA = 'spinner_data';
 // Default settings per specification
 const defaultSettings = {
     displayTitles: false,
-    displayedLists: 1, // Max 3
     samplingMode: 'with', // 'with' or 'without'
     firstDrawLonger: true,
     firstDrawDelay: 5,
@@ -45,12 +44,6 @@ function loadSettings() {
     if (saved) {
         try {
             settings = { ...defaultSettings, ...JSON.parse(saved) };
-
-            // Validate limits immediately upon loading
-            settings.displayedLists = clamp(settings.displayedLists, 1, 3);
-            if (appData && appData.lists && settings.displayedLists > appData.lists.length && appData.lists.length > 0) {
-                settings.displayedLists = appData.lists.length;
-            }
         } catch (e) {
             console.error("Failed to parse settings", e);
         }
@@ -63,14 +56,6 @@ export function getSettings() {
 
 export function setSettings(newSettings) {
     settings = { ...settings, ...newSettings };
-
-    // Enforce constraints
-    settings.displayedLists = clamp(settings.displayedLists, 1, 3);
-
-    // If the data has fewer lists than displayedLists, clamp it down
-    if (appData.lists.length > 0 && settings.displayedLists > appData.lists.length) {
-        settings.displayedLists = appData.lists.length;
-    }
 
     localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
 }
@@ -104,11 +89,6 @@ export function clearData() {
         exhaustedIndices: []
     };
     saveData();
-
-    // Also update settings if displayedLists is now invalid
-    if (settings.displayedLists > 1) {
-        setSettings({ displayedLists: 1 });
-    }
 }
 
 export function updateData(hasHeaders, headers, lists) {
@@ -124,11 +104,6 @@ export function updateData(hasHeaders, headers, lists) {
     };
     initExhaustedTracker();
     saveData();
-
-    // Truncate displayed list count if necessary
-    if (settings.displayedLists > storingLists.length) {
-        setSettings({ displayedLists: storingLists.length });
-    }
 }
 
 function saveData() {

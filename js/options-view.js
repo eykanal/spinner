@@ -3,7 +3,6 @@ import { getSettings, setSettings } from './store.js';
 export function initOptionsView() {
     // Bind DOM elements
     const cbDisplayTitle = document.getElementById('opt-display-title');
-    const inputDisplayedLists = document.getElementById('opt-displayed-lists');
     const selectSamplingMode = document.getElementById('opt-sampling-mode');
     const cbFirstDrawLonger = document.getElementById('opt-first-draw-longer');
     const inputFirstDelay = document.getElementById('opt-first-delay');
@@ -12,7 +11,6 @@ export function initOptionsView() {
     // Load current values
     const settings = getSettings();
     cbDisplayTitle.checked = settings.displayTitles;
-    inputDisplayedLists.value = settings.displayedLists;
     selectSamplingMode.value = settings.samplingMode;
     cbFirstDrawLonger.checked = settings.firstDrawLonger;
     inputFirstDelay.value = settings.firstDrawDelay;
@@ -23,14 +21,6 @@ export function initOptionsView() {
 
     // Event Listeners (Auto-save on change)
     cbDisplayTitle.addEventListener('change', (e) => setSettings({ displayTitles: e.target.checked }));
-
-    inputDisplayedLists.addEventListener('change', (e) => {
-        let val = parseInt(e.target.value, 10);
-        if (isNaN(val) || val < 1) val = 1;
-        if (val > 3) val = 3;
-        e.target.value = val;
-        setSettings({ displayedLists: val });
-    });
 
     selectSamplingMode.addEventListener('change', (e) => setSettings({ samplingMode: e.target.value }));
 
