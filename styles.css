@@ -167,3 +167,33 @@ td {
     /* Allows long text to wrap */
     padding: 10px;
 }
+
+/* Quick Load Section */
+.quick-load-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.quick-load-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.quick-load-links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.quick-load-link {
+    color: #0066cc;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.quick-load-link:hover {
+    color: #004499;
+}

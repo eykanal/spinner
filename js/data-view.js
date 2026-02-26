@@ -1,5 +1,20 @@
 import { getData, updateData, clearData, getSettings } from './store.js';
 
+/**
+ * Configuration for quick-load datasets.
+ * Each object contains:
+ * - name: The display name shown on the page
+ * - path: The relative path to the CSV file in the 'data/' directory
+ * - hasHeaders: Boolean indicating if the first row of the CSV contains list titles
+ * 
+ * To add a new dataset:
+ * 1. Place the .csv file in the /data/ directory
+ * 2. Add a new object to this array with the appropriate properties.
+ */
+const QUICK_LOAD_DATASETS = [
+    { name: 'Purim Roulette', path: 'data/PurimRoulette.csv', hasHeaders: true },
+];
+
 export function initDataView() {
     const fileInput = document.getElementById('csv-upload');
     const cbHasHeaders = document.getElementById('csv-has-headers');
@@ -10,8 +25,12 @@ export function initDataView() {
     cbHasHeaders.checked = data.hasHeaders;
 
     renderTable();
+    renderQuickLoadLinks();
 
     btnDelete.addEventListener('click', () => {
+        if (getData().lists.length > 0) {
+            if (!confirm("Are you sure you want to delete all currently loaded data?")) return;
+        }
         clearData();
         renderTable();
         // Reset file input so we can select the same file again if desired
@@ -33,6 +52,13 @@ export function initDataView() {
         const file = e.target.files[0];
         if (!file) return;
 
+        if (getData().lists.length > 0) {
+            if (!confirm("Loading new data will replace your current lists. Continue?")) {
+                fileInput.value = '';
+                return;
+            }
+        }
+
         const reader = new FileReader();
         reader.onload = function (event) {
             const text = event.target.result;
@@ -48,6 +74,43 @@ export function initDataView() {
             renderTable();
         }
     });
+}
+
+function renderQuickLoadLinks() {
+    const container = document.getElementById('quick-load-links');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    QUICK_LOAD_DATASETS.forEach(dataset => {
+        const link = document.createElement('a');
+        link.href = '#';
+        link.className = 'quick-load-link';
+        link.textContent = dataset.name;
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleQuickLoad(dataset);
+        });
+        container.appendChild(link);
+    });
+}
+
+async function handleQuickLoad(dataset) {
+    if (getData().lists.length > 0) {
+        if (!confirm(`Loading "${dataset.name}" will replace your current lists. Continue?`)) {
+            return;
+        }
+    }
+
+    try {
+        const response = await fetch(dataset.path);
+        if (!response.ok) throw new Error(`Failed to fetch ${dataset.path}`);
+        const csvText = await response.text();
+        processCSV(csvText, dataset.hasHeaders);
+    } catch (error) {
+        console.error("Quick load error:", error);
+        alert(`Error loading dataset: ${error.message}`);
+    }
 }
 
 function processCSV(csvText, hasHeaders) {
