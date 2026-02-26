@@ -105,9 +105,10 @@ td {
 .header-title {
     color: red;
     font-weight: bold;
-    font-size: xx-large;
+    font-size: 60px;
     text-align: center;
     width: 30%;
+    background-color: #fdd;
 }
 
 .spinners-container {
@@ -161,7 +162,7 @@ td {
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-size: xxx-large;
+    font-size: 48px;
     word-break: break-word;
     /* Allows long text to wrap */
     padding: 10px;
