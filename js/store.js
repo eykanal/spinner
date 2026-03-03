@@ -37,6 +37,10 @@ export function initStore() {
     loadData();
 }
 
+export function hasData() {
+    return appData.lists && appData.lists.length > 0;
+}
+
 // --- Settings ---
 
 function loadSettings() {

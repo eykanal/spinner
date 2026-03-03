@@ -1,4 +1,5 @@
 import { getData, updateData, clearData, getSettings } from './store.js';
+import { parseCSV, processCSVToData } from './csv-helper.js';
 
 /**
  * Configuration for quick-load datasets.
@@ -114,21 +115,13 @@ async function handleQuickLoad(dataset) {
 }
 
 function processCSV(csvText, hasHeaders) {
-    if (!csvText || csvText.trim() === "") {
+    const rawGrid = parseCSV(csvText);
+
+    if (rawGrid.length === 0) {
         clearData();
         renderTable();
         return;
     }
-
-    const rows = csvText.split('\n').map(row => row.trim()).filter(row => row !== '');
-
-    if (rows.length === 0) {
-        clearData();
-        renderTable();
-        return;
-    }
-
-    const rawGrid = rows.map(row => parseCSVRow(row));
 
     // Check Max Columns rule = 4. Any row has > 4? Reject.
     for (let i = 0; i < rawGrid.length; i++) {
@@ -140,41 +133,7 @@ function processCSV(csvText, hasHeaders) {
         }
     }
 
-    // Determine columns count
-    let maxCols = 0;
-    for (let row of rawGrid) {
-        if (row.length > maxCols) maxCols = row.length;
-    }
-
-    let parsedHeaders = [];
-    let startRow = 0;
-
-    if (hasHeaders && rawGrid.length > 0) {
-        parsedHeaders = rawGrid[0];
-        // Fill empty headers if some columns were missing in header row
-        while (parsedHeaders.length < maxCols) parsedHeaders.push(`List ${parsedHeaders.length + 1}`);
-        startRow = 1;
-    } else {
-        for (let i = 0; i < maxCols; i++) {
-            parsedHeaders.push(`List ${i + 1}`);
-        }
-    }
-
-    // Pivot table from rows format to column (lists) format
-    let lists = [];
-    for (let c = 0; c < maxCols; c++) {
-        lists.push([]);
-    }
-
-    for (let r = startRow; r < rawGrid.length; r++) {
-        const rowData = rawGrid[r];
-        for (let c = 0; c < maxCols; c++) {
-            const cell = rowData[c];
-            if (cell !== undefined && cell !== null && cell.trim() !== '') {
-                lists[c].push(cell);
-            }
-        }
-    }
+    const { headers: parsedHeaders, lists } = processCSVToData(rawGrid, hasHeaders);
 
     // Validate rules: min 5 items, max 1000 items per list (spec explicitly states this checking criteria)
     for (let i = 0; i < lists.length; i++) {
@@ -205,36 +164,6 @@ function processCSV(csvText, hasHeaders) {
     renderTable();
 }
 
-// A simple CSV row parser that handles basic quotes formatting
-function parseCSVRow(text) {
-    let result = [];
-    let curVal = '';
-    let inQuotes = false;
-
-    for (let i = 0; i < text.length; i++) {
-        let char = text[i];
-
-        if (char === '"') {
-            if (inQuotes && text[i + 1] === '"') {
-                // Escaped quote
-                curVal += '"';
-                i++;
-            } else {
-                // Toggle quotes
-                inQuotes = !inQuotes;
-            }
-        } else if (char === ',' && !inQuotes) {
-            // End of field
-            result.push(curVal);
-            curVal = '';
-        } else {
-            curVal += char;
-        }
-    }
-    result.push(curVal);
-
-    return result;
-}
 
 function renderTable() {
     const data = getData();
